@@ -1,0 +1,17 @@
+{
+	"name": "LS_OnPrem_FileSystem",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "E:\\Data Engineering course",
+			"userId": "Manish\\temp_adf_user",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyZTdlMWJiZi03MDZkLTRjZjgtOGNlMy0wOTUyNDM4NzJhZmUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "adf-SelfHosted-IR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

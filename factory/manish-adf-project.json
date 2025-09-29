@@ -1,0 +1,9 @@
+{
+	"name": "manish-adf-project",
+	"location": "canadacentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "217186ff-6305-4632-85c8-c3781975cefb",
+		"tenantId": "020460e8-4962-4863-a0dd-cd58d20c3d47"
+	}
+}
