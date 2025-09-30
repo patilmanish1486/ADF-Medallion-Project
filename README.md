@@ -1,20 +1,61 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# 🚀 Azure Data Factory - Medallion Architecture Project
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## 📘 Overview
+This project demonstrates an **end-to-end Data Pipeline** using **Azure Data Factory (ADF)**, integrating data from **SQL**, **API**, and **On-Prem** sources into **Azure Data Lake** following the **Medallion Architecture (Bronze, Silver, Gold)**.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+The goal is to automate data movement, transformation, and curation using **ADF activities and triggers**.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+---
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+## ⚙️ Tools & Technologies
+- **Azure Data Factory (ADF)**
+- **Azure Data Lake**
+- **SQL Database**
+- **REST API Integration**
+- **Self-Hosted Integration Runtime (SHIR)**
+- **GitHub** (Version Control)
+
+---
+
+## 🧱 Architecture
+Below is the high-level architecture of the project:
+
+![ADF Medallion Architecture]
+<img width="1344" height="768" alt="adf-project-arch" src="https://github.com/user-attachments/assets/529dade8-bdab-484e-b718-9478609dd18b" />
+
+
+### 🥉 Bronze → 🥈 Silver → 🥇 Gold Layers
+- **Bronze:** Raw data ingestion  
+- **Silver:** Cleaned and structured data  
+- **Gold:** Analytics-ready curated data  
+
+---
+
+## 🔄 Pipeline Flow
+1. Extract data from SQL, API, and On-Prem sources  
+2. Load raw data into **Bronze layer**  
+3. Apply transformations and cleansing to **Silver layer**  
+4. Aggregate and prepare curated data for **Gold layer**  
+5. Automate execution using **ADF triggers**
+
+---
+
+## 🧰 Key Learnings
+- Building **ADF pipelines** with multiple sources  
+- Setting up and using **SHIR**  
+- Implementing **Medallion Architecture**  
+- Managing **datasets, linked services, and triggers**  
+- Understanding **end-to-end data orchestration**
+
+---
+
+## 📈 Outcome
+This project helped me gain **hands-on experience** with Azure Data Factory, data lake layering, and pipeline automation — key skills in **Azure Data Engineering**.
+
+---
+
+## 👤 Author
+**Manish Patil**  
+💼 Data Engineer | Azure | ADF | Data Lake | SQL | API Integration  
+🔗 [GitHub Profile]([https://github.com/your-username](https://github.com/patilmanish1486))
+
