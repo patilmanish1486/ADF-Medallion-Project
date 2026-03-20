@@ -1,61 +1,143 @@
-# 🚀 Azure Data Factory - Medallion Architecture Project
+# ADF Medallion Architecture Pipeline — Azure Data Engineering Project
 
-## 📘 Overview
-This project demonstrates an **end-to-end Data Pipeline** using **Azure Data Factory (ADF)**, integrating data from **SQL**, **API**, and **On-Prem** sources into **Azure Data Lake** following the **Medallion Architecture (Bronze, Silver, Gold)**.
+![ADF](https://img.shields.io/badge/Azure%20Data%20Factory-0089D6?style=flat&logo=microsoft-azure&logoColor=white)
+![DataLake](https://img.shields.io/badge/Azure%20Data%20Lake-0078D4?style=flat&logo=microsoft-azure&logoColor=white)
+![Status](https://img.shields.io/badge/Pipeline%20Status-Succeeded-brightgreen)
 
-The goal is to automate data movement, transformation, and curation using **ADF activities and triggers**.
+## Overview
 
----
-
-## ⚙️ Tools & Technologies
-- **Azure Data Factory (ADF)**
-- **Azure Data Lake**
-- **SQL Database**
-- **REST API Integration**
-- **Self-Hosted Integration Runtime (SHIR)**
-- **GitHub** (Version Control)
+An end-to-end cloud data pipeline built on Azure implementing the
+Medallion Architecture (Bronze → Silver → Gold) for airline booking data.
+The pipeline ingests data from three sources — on-premises SQL, REST API,
+and incremental SQL loads — orchestrates them via a parent pipeline,
+and applies multi-layer transformations using ADF Dataflows and Mapping
+Data Flows before serving analytics-ready Gold layer outputs.
 
 ---
 
-## 🧱 Architecture
-Below is the high-level architecture of the project:
+## Architecture
 
-![ADF Medallion Architecture]
-<img width="1344" height="768" alt="adf-project-arch" src="https://github.com/user-attachments/assets/529dade8-bdab-484e-b718-9478609dd18b" />
-
-
-### 🥉 Bronze → 🥈 Silver → 🥇 Gold Layers
-- **Bronze:** Raw data ingestion  
-- **Silver:** Cleaned and structured data  
-- **Gold:** Analytics-ready curated data  
+![ADF Medallion Architecture](https://github.com/user-attachments/assets/529dade8-bdab-484e-b718-9478609dd18b)
 
 ---
 
-## 🔄 Pipeline Flow
-1. Extract data from SQL, API, and On-Prem sources  
-2. Load raw data into **Bronze layer**  
-3. Apply transformations and cleansing to **Silver layer**  
-4. Aggregate and prepare curated data for **Gold layer**  
-5. Automate execution using **ADF triggers**
+## Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| Azure Data Factory | Pipeline orchestration and dataflows |
+| Azure Data Lake Gen2 | Layered storage (Bronze / Silver / Gold) |
+| ADF Mapping Data Flows | Visual transformations and aggregations |
+| Self-Hosted Integration Runtime | On-premises SQL data ingestion |
+| REST API Integration | API source ingestion |
+| Azure Logic Apps | Email failure alerting |
+| GitHub | Version control via ADF Git integration |
 
 ---
 
-## 🧰 Key Learnings
-- Building **ADF pipelines** with multiple sources  
-- Setting up and using **SHIR**  
-- Implementing **Medallion Architecture**  
-- Managing **datasets, linked services, and triggers**  
-- Understanding **end-to-end data orchestration**
+## Data Model
+
+Built on an airline booking domain with a star schema:
+
+| Table | Type | Description |
+|---|---|---|
+| FactBooking | Fact | Core booking transactions |
+| DimAirline | Dimension | Airline reference data |
+| DimFlight | Dimension | Flight details |
+| DimPassenger | Dimension | Passenger profiles |
+| DimAirport | Dimension | Airport reference data |
 
 ---
 
-## 📈 Outcome
-This project helped me gain **hands-on experience** with Azure Data Factory, data lake layering, and pipeline automation — key skills in **Azure Data Engineering**.
+## Pipeline Layers
+
+### Bronze — Raw Ingestion
+Three child pipelines run sequentially under a parent orchestrator:
+- `ExecuteOnPrem` — ingests raw data from on-premises SQL via SHIR
+- `ExecuteAPI` — ingests data from REST API source
+- `ExecuteIncremental` — incremental load from SQL to Data Lake
+
+### Silver — Transformation Layer
+ADF Dataflow applies transformations per dimension and fact table:
+- Column derivation (gender flags, name formatting, airport enrichment)
+- Data type casting on FactBooking ticket costs
+- Row filtering (age > 25 for passenger dimension)
+- AlterRow policies for upsert logic on all 5 streams
+
+### Gold — Serving Layer
+ADF Dataflow joins FactBooking with DimAirline, applies:
+- Left outer join on booking and airline keys
+- Column selection and aggregation (TotalSales per airline)
+- Window function for revenue ranking
+- Top-N filter to surface highest performing airlines
 
 ---
 
-## 👤 Author
-**Manish Patil**  
-💼 Data Engineer | Azure | ADF | Data Lake | SQL | API Integration  
-🔗 [GitHub Profile]([https://github.com/your-username](https://github.com/patilmanish1486))
+## Pipeline Screenshots
 
+### Silver Layer — Data Transformation Dataflow
+<img width="1918" height="763" alt="image" src="https://github.com/user-attachments/assets/70cbbc45-ca27-4ca6-b299-b0c924353594" />
+
+### Gold Layer — Serving and Aggregation Dataflow
+<img width="1920" height="770" alt="image" src="https://github.com/user-attachments/assets/fac60aaf-ec65-4559-a54c-e0c2e2af8646" />
+
+### Parent Pipeline — Orchestration with Successful Run
+<img width="1887" height="827" alt="image" src="https://github.com/user-attachments/assets/b9aa2733-d13d-498b-a0c5-b46c4c57eab2" />
+
+### Failure Alert — Logic App Email Notification
+<img width="1022" height="687" alt="image" src="https://github.com/user-attachments/assets/2c6827cc-c0b8-476a-a733-039bda329349" />
+
+
+---
+
+## Pipeline Run Evidence
+
+| Activity | Status | Duration |
+|---|---|---|
+| ExecuteOnPrem | Succeeded | 33s |
+| ExecuteAPI | Succeeded | 22s |
+| ExecuteIncremental | Succeeded | 56s |
+| FailureAlert | Succeeded | 6s |
+
+---
+
+## Key Engineering Decisions
+
+- Used parent-child pipeline pattern to separate ingestion concerns
+  and enable independent re-runs of each source
+- Implemented Logic App webhook for failure alerting instead of
+  ADF-native email to demonstrate cross-service integration
+- Applied window ranking in Gold layer to avoid hardcoded top-N
+  filtering — makes the pipeline reusable for any date range
+- Used AlterRow transformation with upsert policy to make Silver
+  layer idempotent — safe to re-run without duplicates
+
+---
+
+## Project Structure
+```
+ADF-Medallion-Project/
+│
+├── pipeline/          # ADF pipeline JSON definitions
+├── dataflow/          # Mapping Data Flow definitions
+├── dataset/           # Dataset definitions
+├── linkedService/     # Linked service configurations
+├── integrationRuntime/# SHIR configuration
+└── factory/           # ADF factory settings
+```
+
+---
+
+## How to Deploy
+
+1. Fork this repository
+2. In Azure Data Factory, go to Manage → Git configuration
+3. Connect to your forked GitHub repo
+4. ADF will automatically import all pipelines, dataflows and datasets
+5. Update linked services with your own connection strings
+6. Publish and trigger the ParentPipeline
+
+---
+
+*Built by Manish Patil — Final Year IT Engineering Student, SPPU, Pune*
+*Connect on [LinkedIn]https://www.linkedin.com/in/manish-patil-009389321*
